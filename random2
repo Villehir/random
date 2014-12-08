@@ -1,0 +1,68 @@
+#include <iostream>
+#include <iterator>
+#include <vector>
+#include <algorithm>
+#include <time.h>
+using namespace std;
+
+
+//Function object
+class RandGen_2 {
+	public:
+	RandGen_2(): numbers() {srand(time(NULL));}
+	int operator()();
+	private:
+	vector<int> numbers;
+};
+
+void printSame(int a);
+
+int i = 0;
+
+int main() {
+	vector<int> numbers1(7);
+	vector<int> numbers2(7);
+	vector<int> v(10);
+	vector<int>::iterator it;
+	ostream_iterator<int> ostr_it(cout, " ");
+	RandGen_2 randGen_2;
+	
+	
+	generate(numbers1.begin(), numbers1.end(), randGen_2);
+	cout << "First lotto row: ";
+	copy(numbers1.begin(), numbers1.end(), ostr_it);
+	cout << endl;
+
+	generate(numbers2.begin(), numbers2.end(), randGen_2);
+	cout << "Second lotto row: ";
+	copy(numbers2.begin(), numbers2.end(), ostr_it);
+	cout << endl;
+
+	sort(numbers1.begin(), numbers1.end());
+	sort(numbers2.begin(), numbers2.end());
+
+	it = set_intersection (numbers1.begin(), numbers1.end(), numbers2.begin(), numbers2.end(), v.begin());
+
+	v.resize(it-v.begin());
+
+	cout << "The intersection has " << (v.size()) << " elements:\n";
+	cout << "Same numbers:" << endl;
+
+	for_each(v.begin(), v.end(), printSame);
+
+	return 0;
+}
+
+int RandGen_2::operator()() {
+	int number;
+	do {
+		number = rand() % 37 + 1;
+	} while(find(numbers.begin(), numbers.end(), number) != numbers.end());
+	numbers.push_back(number);
+	return number;
+}
+
+void printSame(int a) {
+	i++;
+	cout << "#" << i << ": " << a << endl;
+}
