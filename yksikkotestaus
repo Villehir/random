@@ -1,0 +1,144 @@
+//Ohjelma ottaa sisäänsä aloitusajan ja lopetusajan järjestyksestä riippumatta muodossa tunnit ja minuutit
+//Tulostaa aloitusajan ja matkan keston aikojen välisenä erona
+
+#include <iostream>
+#include <cstdio>
+#include <time.h>
+using namespace std;
+
+
+class Time {
+	public:
+		void read(char *prompt);
+		int lessThan(Time time);
+		Time subtract(Time time);
+		void display();
+
+		//testcase joka tarkistaa ajan olevan oikein
+		void testValidTime();
+
+	private:
+		int tunnit;
+		int minuutit;
+};
+
+
+
+int main() {
+	Time time1, time2, duration;
+
+	time1.read("Enter time 1: ");
+	cout << "Testing time1 for validity" << endl;
+	time1.testValidTime();
+
+	time2.read("Enter time 2: ");
+	cout << "Testing time2 for validity" << endl;
+	time2.testValidTime();
+
+	if (time1.lessThan(time2)) {
+		duration = time2.subtract(time1);
+		cout << "\nStarting time was ";
+		time1.display();
+	} else {
+		duration = time1.subtract(time2);
+		cout << "\nStarting time was ";
+		time2.display();
+	}
+	cout << "\nDuration was ";
+	duration.display();
+	return 0;
+}
+
+void Time::read(char *prompt) {
+
+	cout << prompt;
+	cout << "Hours" << endl;
+	do {
+		cin >> tunnit;
+		if (!cin) { //tarkistetaan, onko syötetty arvo numero
+			cout << "Enter valid number" << endl;
+		}
+		else if (tunnit < 0 || tunnit > 24) {
+			cout << "invalid hours" << endl;
+		}
+		//Reset buffer
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+	} while (tunnit < 0 || tunnit > 24);
+
+	
+
+	cout << prompt;
+	cout << "Minutes" << endl;
+	do {
+
+		cin >> minuutit;
+		if (!cin) { //tarkistetaan, onko syötetty arvo numero
+			cout << "Enter valid number" << endl;
+		}
+		else if (minuutit < 0 || minuutit > 60) {
+			cout << "invalid minutes" << endl;
+		}
+		//Reset buffer
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+	} while (minuutit < 0 || minuutit > 60);
+
+
+}
+
+
+
+int Time::lessThan(Time time) {
+	int t1, t2, tulos;
+	
+	t1 = tunnit * 60 + minuutit;
+	t2 = time.tunnit * 60 + time.minuutit;
+	
+	
+	if(t1 < t2) {
+		return 1;
+	}
+	if (t1>= t2) {
+		return 0;
+	}
+}
+
+Time Time::subtract(Time time) {
+	Time aux;
+	int dmin, t1min, t2min;
+	
+	t1min = tunnit * 60 + minuutit;
+	t2min = time.tunnit * 60 + time.minuutit;
+	
+	dmin = t1min - t2min;
+	
+	aux.tunnit = dmin/60;
+	aux.minuutit = dmin % 60;
+	return aux;
+
+}
+
+void Time::display(void) {
+	cout << tunnit << ":";
+	if (minuutit < 10) {
+		cout << "0" << minuutit;
+	}
+	else
+		cout << minuutit;
+}
+
+void Time::testValidTime() {
+
+	
+	if (tunnit < 0 || tunnit > 24)
+		cout << "Hours not valid" << tunnit << endl;
+	else
+		cout << "Hours OK" << endl;
+
+	if (minuutit < 0 || minuutit > 60)
+		cout << "Minutes not valid" << minuutit << endl;
+	else
+		cout << "Minutes OK" << endl;
+
+}
